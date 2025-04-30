@@ -2,10 +2,10 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
+        Scanner in = new Scanner(System.in);
 
-        Account account = new CheckingAccount("EOKDEOKD", 500.0);
-        Customer customer = new Customer("Martin", "STU001", account);
+        Account account = new CheckingAccount("jfkro484ufj", 500.0);
+        Customer customer = new Customer("Martin", "martink", account);
 
         int choice;
         do {
@@ -15,7 +15,8 @@ public class Main {
             System.out.println("3. Withdraw");
             System.out.println("4. Exit");
             System.out.print("Enter your choice: ");
-            choice = sc.nextInt();
+            choice = in.nextInt();
+            System.out.println("\n----------------------------\n");
 
             switch (choice) {
                 case 1:
@@ -23,12 +24,12 @@ public class Main {
                     break;
                 case 2:
                     System.out.print("Enter deposit amount: ");
-                    double depositAmount = sc.nextDouble();
+                    double depositAmount = in.nextDouble();
                     account.deposit(depositAmount);
                     break;
                 case 3:
                     System.out.print("Enter withdrawal amount: ");
-                    double withdrawAmount = sc.nextDouble();
+                    double withdrawAmount = in.nextDouble();
                     account.withdraw(withdrawAmount);
                     break;
                 case 4:
@@ -39,6 +40,6 @@ public class Main {
             }
         } while (choice != 4);
 
-        sc.close();
+        in.close();
     }
 }

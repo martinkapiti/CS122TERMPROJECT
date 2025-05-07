@@ -1,4 +1,4 @@
-class Customer {
+public class Customer {
     private String name;
     private String customerId;
     private Account account;
@@ -9,18 +9,15 @@ class Customer {
         this.account = account;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public String getCustomerId() {
         return customerId;
     }
 
     public Account getAccount() {
         return account;
-    }
-
-    public void displayInfo() {
-        System.out.println("Customer: " + name);
-        System.out.println("ID: " + customerId);
-        account.displayAccountType();
-        System.out.println("Balance: $" + account.getBalance());
     }
 }

@@ -1,60 +1,48 @@
 import java.util.ArrayList;
+import java.util.List;
 
-abstract class Account {
-    protected String accountNumber;
-    protected double balance;
-    protected ArrayList<Transaction> transactionHistory = new ArrayList<>();
+public abstract class Account {
+    private String accountNumber;
+    private double balance;
+    private List<Transaction> transactions;  // Track all transactions
 
     public Account(String accountNumber, double balance) {
         this.accountNumber = accountNumber;
         this.balance = balance;
-    }
-
-    public void deposit(double amount) {
-        if (amount > 0) {
-            balance += amount;
-            transactionHistory.add(new Transaction("Deposit", amount));
-            System.out.println("Deposited: $" + amount);
-        } else {
-            System.out.println("Invalid deposit amount.");
-        }
-    }
-
-    public void withdraw(double amount) {
-        if (amount > 0 && amount <= balance) {
-            balance -= amount;
-            transactionHistory.add(new Transaction("Withdrawal", amount));
-            System.out.println("Withdrawn: $" + amount);
-        } else {
-            System.out.println("Invalid or insufficient funds.");
-        }
-    }
-
-    public boolean transferTo(Account recipient, double amount) {
-        if (amount > 0 && amount <= this.balance) {
-            this.withdraw(amount);
-            recipient.deposit(amount);
-            transactionHistory.add(new Transaction("Transfer to " + recipient.accountNumber, amount));
-            return true;
-        } else {
-            System.out.println("Transfer failed: Insufficient funds or invalid amount.");
-            return false;
-        }
+        this.transactions = new ArrayList<>();
     }
 
     public double getBalance() {
         return balance;
     }
 
-    public void showTransactionHistory() {
-        if (transactionHistory.isEmpty()) {
-            System.out.println("No transactions found.");
-        } else {
-            for (Transaction t : transactionHistory) {
-                System.out.println(t);
-            }
+    public void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+            transactions.add(new Transaction("Deposit", amount));
         }
     }
 
-    public abstract void displayAccountType();
+    public void withdraw(double amount) {
+        if (amount > 0 && balance >= amount) {
+            balance -= amount;
+            transactions.add(new Transaction("Withdraw", amount));
+        }
+    }
+
+    public void transfer(double amount, Account recipient) {
+        if (amount > 0 && balance >= amount) {
+            this.withdraw(amount);
+            recipient.deposit(amount);
+            transactions.add(new Transaction("Transfer to " + recipient.getAccountNumber(), amount));
+        }
+    }
+
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
 }

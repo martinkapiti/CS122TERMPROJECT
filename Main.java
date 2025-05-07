@@ -1,112 +1,143 @@
-import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.List;
+import java.util.ArrayList;
 
 public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        ArrayList<Customer> customers = new ArrayList<>();
-        Customer current = null;
+    private static Scanner scanner = new Scanner(System.in);
+    private static List<Customer> customers = new ArrayList<>();
 
-        while (current == null) {
+    public static void main(String[] args) {
+        while (true) {
+            System.out.println("\n=== Welcome to the Bank Simulator ===");
             System.out.println("1. Login");
             System.out.println("2. Register");
+            System.out.println("3. Exit");
             System.out.print("Choose an option: ");
-            int choice = sc.nextInt();
-            sc.nextLine(); 
+            int choice = scanner.nextInt();
+            scanner.nextLine(); 
 
-            if (choice == 1) {
-                System.out.print("Enter your customer ID: ");
-                String inputId = sc.nextLine();
-
-                for (Customer c : customers) {
-                    if (c.getCustomerId().equals(inputId)) {
-                        current = c;
-                        break;
-                    }
+            switch (choice) {
+                case 1 -> login();
+                case 2 -> register();
+                case 3 -> {
+                    System.out.println("Exiting... Goodbye!");
+                    return;
                 }
+                default -> System.out.println("Invalid choice. Try again.");
+            }
+        }
+    }
 
-                if (current == null) {
-                    System.out.println("Customer not found. Try again or register.");
-                }
-            } else if (choice == 2) {
-                System.out.print("Enter your name: ");
-                String name = sc.nextLine();
+    private static void login() {
+        System.out.print("Enter your Customer ID: ");
+        String id = scanner.nextLine();
 
-                System.out.print("Choose account type (1-Checking, 2-Savings): ");
-                int accType = sc.nextInt();
-                sc.nextLine();
-
-                System.out.print("Enter initial deposit: ");
-                double deposit = sc.nextDouble();
-                sc.nextLine();
-
-                String customerId = "CUST" + (customers.size() + 1);
-                Account account = (accType == 1) ? new CheckingAccount("CHK" + customerId, deposit) : new SavingsAccount("SAV" + customerId, deposit);
-                current = new Customer(name, customerId, account);
-                customers.add(current);
-
-                System.out.println("Registration successful. Your Customer ID is: " + customerId);
+        Customer current = null;
+        for (Customer c : customers) {
+            if (c.getCustomerId().equals(id)) {
+                current = c;
+                break;
             }
         }
 
-        int choice;
-        do {
-            System.out.println("\n--- Bank Account Menu ---");
+        if (current != null) {
+            System.out.println("Welcome back, " + current.getName() + "!");
+            accountMenu(current);
+        } else {
+            System.out.println("Customer not found.");
+        }
+    }
+
+    private static void register() {
+        System.out.print("Enter your name: ");
+        String name = scanner.nextLine();
+
+        System.out.println("Choose account type:");
+        System.out.println("1. Checking");
+        System.out.println("2. Savings");
+        int accType = scanner.nextInt();
+        scanner.nextLine();
+
+        System.out.print("Initial deposit: ");
+        double deposit = scanner.nextDouble();
+        scanner.nextLine();
+
+        String id = "CUST" + (customers.size() + 1);
+        Account account;
+
+        if (accType == 1) {
+            account = new CheckingAccount("CHK" + id, deposit);
+        } else {
+            account = new SavingsAccount("SAV" + id, deposit);
+        }
+
+        Customer newCustomer = new Customer(name, id, account);
+        customers.add(newCustomer);
+
+        System.out.println("Registration successful. Your Customer ID is: " + id);
+    }
+
+    private static void accountMenu(Customer customer) {
+        while (true) {
+            System.out.println("\n--- Account Menu ---");
             System.out.println("1. View Balance");
             System.out.println("2. Deposit");
             System.out.println("3. Withdraw");
             System.out.println("4. View Transactions");
             System.out.println("5. Transfer Funds");
-            System.out.println("6. Exit");
-            System.out.print("Enter your choice: ");
-            choice = sc.nextInt();
-            Account account = current.getAccount();
+            System.out.println("6. Logout");
+            System.out.print("Choose an option: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
 
             switch (choice) {
-                case 1:
-                    current.displayInfo();
-                    break;
-                case 2:
-                    System.out.print("Enter deposit amount: ");
-                    account.deposit(sc.nextDouble());
-                    break;
-                case 3:
-                    System.out.print("Enter withdrawal amount: ");
-                    account.withdraw(sc.nextDouble());
-                    break;
-                case 4:
-                    account.showTransactionHistory();
-                    break;
-                case 5:
-                    sc.nextLine();
-                    System.out.print("Enter recipient customer ID: ");
-                    String targetId = sc.nextLine();
+                case 1 -> System.out.println("Current Balance: $" + customer.getAccount().getBalance());
+                case 2 -> {
+                    System.out.print("Enter amount to deposit: ");
+                    double amount = scanner.nextDouble();
+                    scanner.nextLine();
+                    customer.getAccount().deposit(amount);
+                }
+                case 3 -> {
+                    System.out.print("Enter amount to withdraw: ");
+                    double amount = scanner.nextDouble();
+                    scanner.nextLine();
+                    customer.getAccount().withdraw(amount);
+                }
+                case 4 -> {
+                    System.out.println("Transaction History:");
+                    for (Transaction t : customer.getAccount().getTransactions()) {
+                        System.out.println(t);
+                    }
+                }
+                case 5 -> {
+                    System.out.print("Enter recipient Customer ID: ");
+                    String recipientId = scanner.nextLine();
                     Customer recipient = null;
                     for (Customer c : customers) {
-                        if (c.getCustomerId().equals(targetId)) {
+                        if (c.getCustomerId().equals(recipientId)) {
                             recipient = c;
                             break;
                         }
                     }
+
                     if (recipient == null) {
                         System.out.println("Recipient not found.");
-                    } else {
-                        System.out.print("Enter amount to transfer: ");
-                        double amt = sc.nextDouble();
-                        boolean success = account.transferTo(recipient.getAccount(), amt);
-                        if (success) {
-                            System.out.println("Transfer successful.");
-                        }
+                        break;
                     }
-                    break;
-                case 6:
-                    System.out.println("Goodbye.");
-                    break;
-                default:
-                    System.out.println("Invalid choice.");
-            }
-        } while (choice != 6);
 
-        sc.close();
+                    System.out.print("Enter amount to transfer: ");
+                    double amount = scanner.nextDouble();
+                    scanner.nextLine();
+
+                    customer.getAccount().transfer(amount, recipient.getAccount());
+                }
+                case 6 -> {
+                    System.out.println("Logging out...");
+                    return;
+                }
+                default -> System.out.println("Invalid choice. Try again.");
+            }
+        }
     }
 }

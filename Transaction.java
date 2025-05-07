@@ -1,19 +1,18 @@
 import java.time.LocalDateTime;
 
-
-class Transaction {
+public class Transaction {
     private String type;
     private double amount;
-    private LocalDateTime date;
+    private LocalDateTime timestamp;
 
     public Transaction(String type, double amount) {
         this.type = type;
         this.amount = amount;
-        this.date = LocalDateTime.now();
+        this.timestamp = LocalDateTime.now();
     }
 
     @Override
     public String toString() {
-        return type + " of $" + amount + " on " + date;
+        return "Transaction: " + type + " | Amount: $" + amount + " | Time: " + timestamp;
     }
 }

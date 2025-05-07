@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public abstract class Account {
+abstract class Account {
     protected String accountNumber;
     protected double balance;
     protected ArrayList<Transaction> transactionHistory = new ArrayList<>();

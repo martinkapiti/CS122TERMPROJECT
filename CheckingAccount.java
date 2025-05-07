@@ -1,4 +1,4 @@
-public class CheckingAccount extends Account {
+class CheckingAccount extends Account {
     public CheckingAccount(String accountNumber, double balance) {
         super(accountNumber, balance);
     }
@@ -8,4 +8,3 @@ public class CheckingAccount extends Account {
         System.out.println("Checking Account");
     }
 }
-

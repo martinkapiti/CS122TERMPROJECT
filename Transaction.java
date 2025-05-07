@@ -1,6 +1,7 @@
 import java.time.LocalDateTime;
 
-public class Transaction {
+
+class Transaction {
     private String type;
     private double amount;
     private LocalDateTime date;
@@ -16,4 +17,3 @@ public class Transaction {
         return type + " of $" + amount + " on " + date;
     }
 }
-

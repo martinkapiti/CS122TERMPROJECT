@@ -5,29 +5,48 @@ public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         ArrayList<Customer> customers = new ArrayList<>();
-
-        Account acc1 = new CheckingAccount("CHK123", 500);
-        Customer c1 = new Customer("Martin", "STU001", acc1);
-        customers.add(c1);
-
-        Account acc2 = new SavingsAccount("SAV999", 1000);
-        Customer c2 = new Customer("Martin", "STU002", acc2);
-        customers.add(c2);
-
-        System.out.print("Enter your customer ID: ");
-        String inputId = sc.nextLine();
         Customer current = null;
 
-        for (Customer c : customers) {
-            if (c.getCustomerId().equals(inputId)) {
-                current = c;
-                break;
-            }
-        }
+        while (current == null) {
+            System.out.println("1. Login");
+            System.out.println("2. Register");
+            System.out.print("Choose an option: ");
+            int choice = sc.nextInt();
+            sc.nextLine(); 
 
-        if (current == null) {
-            System.out.println("Customer not found.");
-            return;
+            if (choice == 1) {
+                System.out.print("Enter your customer ID: ");
+                String inputId = sc.nextLine();
+
+                for (Customer c : customers) {
+                    if (c.getCustomerId().equals(inputId)) {
+                        current = c;
+                        break;
+                    }
+                }
+
+                if (current == null) {
+                    System.out.println("Customer not found. Try again or register.");
+                }
+            } else if (choice == 2) {
+                System.out.print("Enter your name: ");
+                String name = sc.nextLine();
+
+                System.out.print("Choose account type (1-Checking, 2-Savings): ");
+                int accType = sc.nextInt();
+                sc.nextLine();
+
+                System.out.print("Enter initial deposit: ");
+                double deposit = sc.nextDouble();
+                sc.nextLine();
+
+                String customerId = "CUST" + (customers.size() + 1);
+                Account account = (accType == 1) ? new CheckingAccount("CHK" + customerId, deposit) : new SavingsAccount("SAV" + customerId, deposit);
+                current = new Customer(name, customerId, account);
+                customers.add(current);
+
+                System.out.println("Registration successful. Your Customer ID is: " + customerId);
+            }
         }
 
         int choice;
@@ -49,19 +68,17 @@ public class Main {
                     break;
                 case 2:
                     System.out.print("Enter deposit amount: ");
-                    double dep = sc.nextDouble();
-                    account.deposit(dep);
+                    account.deposit(sc.nextDouble());
                     break;
                 case 3:
                     System.out.print("Enter withdrawal amount: ");
-                    double with = sc.nextDouble();
-                    account.withdraw(with);
+                    account.withdraw(sc.nextDouble());
                     break;
                 case 4:
                     account.showTransactionHistory();
                     break;
                 case 5:
-                    sc.nextLine(); // clear buffer
+                    sc.nextLine();
                     System.out.print("Enter recipient customer ID: ");
                     String targetId = sc.nextLine();
                     Customer recipient = null;
@@ -71,15 +88,14 @@ public class Main {
                             break;
                         }
                     }
-
                     if (recipient == null) {
                         System.out.println("Recipient not found.");
                     } else {
                         System.out.print("Enter amount to transfer: ");
-                        double transferAmount = sc.nextDouble();
-                        boolean success = account.transferTo(recipient.getAccount(), transferAmount);
+                        double amt = sc.nextDouble();
+                        boolean success = account.transferTo(recipient.getAccount(), amt);
                         if (success) {
-                            System.out.println("Transfer successful!");
+                            System.out.println("Transfer successful.");
                         }
                     }
                     break;
